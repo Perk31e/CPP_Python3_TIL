@@ -1,6 +1,6 @@
-# **백준 1929** (https://www.acmicpc.net/problem/1929) 도전
+# 도전할 문제 **백준 1929** // **LeetCode 347**
 
-# **(보너스) LeetCode 347** (https://leetcode.com/problems/top-k-frequent-elements/) 도전
+## **백준 1929** (https://www.acmicpc.net/problem/1929) 도전
 
 ## 문제 - 백준 1929
 
@@ -29,6 +29,8 @@
 2. **제곱근**
    - C++: `cmath` 라이브러리를 추가하고 `sqrt(값)`으로 계산.
    - Python: `math` 라이브러리를 추가하고 `math.sqrt(값)`으로 계산.
+
+## **(보너스) LeetCode 347** (https://leetcode.com/problems/top-k-frequent-elements/) 도전
 
 ## 문제 - (보너스) LeetCode 347
 
