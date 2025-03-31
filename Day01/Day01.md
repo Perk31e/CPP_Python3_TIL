@@ -101,23 +101,43 @@ return result;
    C++에서 파이썬의 딕셔너리와 유사한 해시 테이블 자료구조
    키-값 쌍을 저장하며, 평균 **O(1)** 시간복잡도를 가지며 요소 접근/삽입/삭제 가능 **(따라서, 키/값 형태는 pair보다는 unordered_map 사용 권장)**
    요소 빈도수 계산 등에 효율적으로 사용 가능
-   예: **unordered_map<int, int> count;**
+   예:
+   ```cpp
+   unordered_map<int, int> count;**
+   ```
 2. **pair**
    두 가지 데이터를 하나의 단위로 저장할 수 있는 자료 구조
    **pair<자료형 1, 자료형 2> 변수명;** 형태로 선언
    **first**와 **second** 멤버를 통해 각 요소에 접근
    벡터 등의 컨테이너와 함께 사용하여 여러 쌍의 데이터 관리 가능
-   예: **vector<pair<int, int>> freq_vec;**
+   예:
+
+   ```cpp
+   vector<pair<int, int>> freq_vec;
+   ```
 
 3. **greater<>()와 sort 함수**
    C++ **sort()** 함수는 기본적으로 **첫 번째 인자**를 기준으로 오름차순 정렬 **(다른 순번의 인자를 기준으로 정렬하려면 따로 함수 정의해야 한다.)**
    greater<>() 함수 객체를 사용하면 내림차순으로 정렬 가능
-   예 **sort(freq_vec.begin(), freq_vec.end(), greater<>());**
+   예:
+   ```cpp
+   sort(freq_vec.begin(), freq_vec.end(), greater<>());
+   ```
    **pair**를 정렬할 때 기본적으로 **first** 요소를 기준으로 정렬하므로, 빈도수를 **first**에 저장하면 빈도수 기준으로 정렬 가능
 
 3-1. **나는 greater<>() 쓰기 싫다?**
-**sort(vec.begin(), vec.end(), greater<>());** 대신에
-**sort(vec.rbegin(), vec.rend());** 사용할 수 있다.
+
+```cpp
+sort(vec.begin(), vec.end(), greater<>());
+```
+
+대신에
+
+```cpp
+sort(vec.rbegin(), vec.rend());
+```
+
+사용할 수 있다.
 
 4. **Counter의 저장방식**
    `Counter`는 `collections` 모듈의 클래스. 원래 리스트를 입력받아 각 요소의 빈도수를 키-값 쌍으로 저장.
