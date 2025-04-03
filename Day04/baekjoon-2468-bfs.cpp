@@ -13,7 +13,7 @@ bool visited[100][100];
 int dx[] = {-1, 0, 1, 0};
 int dy[] = {0, 1, 0, -1};
 
-// DFS 함수
+// BFS 함수
 void bfs(int start_x, int start_y, int height)
 {
     deque<pair<int, int>> q;
