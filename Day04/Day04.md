@@ -76,7 +76,7 @@ def dfs(x, y, height):
 **(핵심)** 가장 큰 차이점은 **BFS**는 **가까운 것부터 탐색**하고, **DFS**는 **한 방향으로 끝까지 탐색**한다는 점입니다.
 
 (코드 비교)
-**DFS**
+**DFS (재귀)**
 
 ```
 # DFS (재귀 방식)
@@ -89,6 +89,40 @@ def dfs(x, y, height):
 
       if 0 <= nx < n and 0 <= ny < n and not visited[nx][ny] and area[nx][ny] > height:
             dfs(nx, ny, height)  # 재귀 호출로 바로 깊이 탐색
+```
+
+**DFS (스택)**
+
+```
+// DFS (스택 방식)
+void dfs_stack(int start_x, int start_y, int height) {
+    stack<pair<int, int>> s;
+    s.push({start_x, start_y});
+
+    while (!s.empty()) {
+        int x = s.top().first;
+        int y = s.top().second;
+        s.pop();
+
+        // 이미 방문한 노드면 스킵
+        if (visited[x][y])
+            continue;
+
+        // 방문 표시는 스택에서 꺼낼 때 함
+        visited[x][y] = true;
+
+        // 4방향 탐색 (탐색 순서가 중요하면 역순으로 스택에 추가)
+        for (int i = 3; i >= 0; i--) {  // 3,2,1,0 순으로 스택에 추가하면 0,1,2,3 순으로 처리됨
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            if (nx >= 0 && nx < N && ny >= 0 && ny < N &&
+                !visited[nx][ny] && map[nx][ny] > height) {
+                s.push({nx, ny});
+            }
+        }
+    }
+}
 ```
 
 **BFS**
@@ -115,8 +149,9 @@ def bfs(start_x, start_y, height):
 
 **(핵심)**
 
-- DFS는 발견한 노드를 **즉시 처리**(재귀 호출)하므로 깊이 우선으로 탐색합니다.
-- BFS는 발견한 노드를 큐에 넣고 **나중에 처리**하므로 너비 우선으로 탐색합니다.
+- DFS 재귀: 발견한 노드를 **즉시 처리**(재귀 호출)하므로 깊이 우선으로 탐색합니다.
+- DFS 스택: 발견한 노드를 스택에 넣고, **가장 최근에 발견한 노드부터 처리**(LIFO)하므로 깊이 우선으로 탐색합니다.
+- BFS: 발견한 노드를 큐에 넣고 **나중에 처리**하므로 너비 우선으로 탐색합니다.
 
 2.  **DFS와 BFS 선택 가이드라인**
     그래프 탐색 문제에서 알고리즘 선택은 문제의 특성에 따라 달라집니다:
