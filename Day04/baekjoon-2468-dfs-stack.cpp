@@ -27,9 +27,6 @@ void dfs_stack(int start_x, int start_y, int height)
         int y = s.top().second;
         s.pop(); // 스택에서 제거
 
-        // 방문 표시는 스택에서 꺼낼 때 해야 함
-        visited[x][y] = true;
-
         // 4방향 탐색
         for (int i = 0; i < 4; i++)
         {
