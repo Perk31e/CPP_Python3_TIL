@@ -70,7 +70,7 @@ int main(void)
         fill(&visited[0][0], &visited[0][0] + 100 * 100, false);
         int safeArea = 0;
 
-        // 모든 지역에 대해 DFS 수행
+        // 모든 지역에 대해 BFS 수행
         for (int i = 0; i < N; i++)
         {
             for (int j = 0; j < N; j++)
