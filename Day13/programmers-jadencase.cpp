@@ -33,6 +33,7 @@ string solution(string s)
         {
             if (j == 0)
             {
+                // A = 97, Z = 122
                 if (static_cast<int>(test[i][0]) >= 97 && static_cast<int>(test[i][0]) <= 122)
                 {
                     test[i][j] = test[i][j] - 32;
@@ -40,6 +41,7 @@ string solution(string s)
             }
             else
             {
+                // a = 65, z = 90
                 if (static_cast<int>(test[i][j]) >= 65 && static_cast<int>(test[i][j]) <= 90)
                 {
                     test[i][j] = test[i][j] + 32;
