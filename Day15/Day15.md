@@ -1,151 +1,102 @@
-# 도전할 문제 **백준 17484 - 진우의 달 여행(Small)**
+# 도전할 문제 **백준 17271 - 리그 오브 레전설(Small)**
 
-## **백준 17484 - 진우의 달 여행(Small)** (https://www.acmicpc.net/problem/17484)
+## **백준 17271 - 리그 오브 레전설(Small)** (https://www.acmicpc.net/problem/17271)
 
 ## 문제
 
-우주비행사 진우는 달 여행을 위한 최적의 경로를 찾으려고 합니다. N x M 행렬의 각 칸은 비용을 나타내며, 다음과 같은 조건에서 최소 비용의 경로를 찾아야 합니다:
+리그 오브 레전설에서는 두 종류의 스킬만 사용할 수 있습니다:
 
-- 위에서 아래로 내려가야 함
-- 방향은 왼쪽 아래, 아래, 오른쪽 아래 중 하나
-- 같은 방향으로 두 번 연속 이동할 수 없음
+- A 스킬: 시전 시간 1초
+- B 스킬: 시전 시간 M초
+
+정확히 N초 동안 스킬을 사용할 때, 가능한 모든 스킬 조합의 수를 구해야 합니다.
 
 ## 접근 방식
 
-### 첫 번째 도전 (baekjoon-17484.cpp)
+### 첫 번째 도전 (baekjoon-17271.cpp)
 
-풀이 방식: 깊이 우선 탐색(DFS)을 사용하여 모든 가능한 경로 탐색
+풀이 방식: 깊이 우선 탐색(DFS)을 사용하여 모든 가능한 조합 생성
 
 ```cpp
-// 핵심 로직: DFS로 모든 경로 탐색
-int space_move(int y, int x, int prev_dir)
+// 핵심 로직: 재귀로 모든 가능한 조합 생성
+void dp(int cur_time, string current)
 {
-    // 기저 조건: 달(맨 아래 행)에 도착한 경우
-    if (y == n - 1)
+    // 목표 시간 도달했을 때
+    if (cur_time == n)
     {
-        return mp[y][x];
+        combinations.insert(current);
+        return;
     }
 
-    int min_cost = INF;
+    // 시간 초과 방지
+    if (cur_time > n)
+        return;
 
-    // 3가지 방향으로 탐색
-    for (int i = 0; i < 3; i++)
-    {
-        // 같은 방향으로 두 번 연속 이동할 수 없음
-        if (i == prev_dir)
-        {
-            continue;
-        }
+    // A 스킬 (1초)
+    dp(cur_time + 1, current + 'a');
 
-        int ny = y + dy[i];
-        int nx = x + dx[i];
-
-        if (ny >= 0 && ny < n && nx >= 0 && nx < m)
-        {
-            // 현재 위치 비용 + 다음 이동의 최소 비용
-            int next_cost = mp[y][x] + space_move(ny, nx, i);
-            min_cost = min(min_cost, next_cost);
-        }
-    }
-
-    return min_cost;
+    // B 스킬 (m초)
+    dp(cur_time + m, current + 'b');
 }
 
-// 메인 함수에서는 모든 열에서 출발해보기
-for (int i = 0; i < m; i++)
-{
-    int tmp_cost = space_move(0, i, -1);
-    min_cost = min(min_cost, tmp_cost);
-}
+// 메인 함수에서는 모든 조합을 집합에 저장하고 크기를 출력
+dp(0, "");
+cout << combinations.size();
 ```
 
-### 두 번째 도전 (baekjoon-17484-dp.cpp)
+**문제점**: 재귀 호출이 너무 많이 발생하고 모든 조합을 저장하면서 메모리 초과 발생
 
-풀이 방식: 동적 계획법(DP)을 적용하여 중복 계산 제거
+### 두 번째 도전 (baekjoon-17271-math.cpp)
+
+풀이 방식: 동적 계획법(DP)을 적용하여 조합의 개수만 계산
 
 ```cpp
-// DP 상태 정의: dp[y][x][dir] = y,x 위치에 dir 방향에서 왔을 때의 최소 비용
-int dp[6][6][3];
+// 핵심 로직: DP로 각 시간별 가능한 조합의 수 계산
+vector<long long> dp(N + 1, 0);
+dp[0] = 1; // 아무것도 사용하지 않는 경우(0초)는 1가지
 
-// 핵심 로직: 메모이제이션을 적용한 DFS
-int space_move(int y, int x, int prev_dir)
+for (int i = 1; i <= N; i++)
 {
-    // 기저 조건: 달(맨 아래 행)에 도착한 경우
-    if (y == n - 1)
+    // A 스킬을 사용하는 경우 (1초)
+    dp[i] = dp[i - 1];
+
+    // B 스킬을 사용하는 경우 (M초)
+    if (i >= M)
     {
-        return mp[y][x];
+        dp[i] = (dp[i] + dp[i - M]) % MOD;
     }
-
-    // 이미 계산된 상태라면 저장된 값 반환 (메모이제이션)
-    if (dp[y][x][prev_dir] != -1)
-    {
-        return dp[y][x][prev_dir];
-    }
-
-    int min_cost = INF;
-
-    // 3가지 방향으로 탐색
-    for (int i = 0; i < 3; i++)
-    {
-        // 같은 방향으로 두 번 연속 이동할 수 없음
-        if (i == prev_dir)
-        {
-            continue;
-        }
-
-        int ny = y + dy[i];
-        int nx = x + dx[i];
-
-        if (ny >= 0 && ny < n && nx >= 0 && nx < m)
-        {
-            int next_cost = mp[y][x] + space_move(ny, nx, i);
-            min_cost = min(min_cost, next_cost);
-        }
-    }
-
-    // 계산된 최소 비용을 DP 테이블에 저장
-    return dp[y][x][prev_dir] = min_cost;
 }
 
-// 메인 함수의 핵심 부분
-// DP 테이블 초기화
-fill(&dp[0][0][0], &dp[0][0][0] + 6 * 6 * 3, -1);
-
-// 모든 열에서 출발해보기
-for (int i = 0; i < m; i++)
-{
-    for (int dir = 0; dir < 3; dir++)
-    {
-        int cost = space_move(0, i, dir);
-        min_cost = min(min_cost, cost);
-    }
-}
+// 최종 결과 출력
+cout << dp[N] << endl;
 ```
 
 ## 깨달은 점
 
-**재귀와 DP의 효과적인 활용**
+**효율적인 DP 설계**
 
-1. **기저 조건(Base Case)의 중요성**
+1. **상태 표현의 최소화**
 
-   - 재귀 함수에서 `if (y == n - 1)` 조건은 종료 시점을 정의함
-   - 이것이 없으면 무한 재귀로 스택 오버플로우 발생 가능
+   - 첫 번째 접근: 모든 문자열 조합을 저장하여 메모리 초과
+   - 두 번째 접근: 각 시간대별 가능한 조합의 '개수'만 저장하여 메모리 효율화
 
-2. **중복 계산 제거를 통한 효율성 향상**
+2. **점화식 설계**
 
-   - 순수 재귀만 사용하면 많은 상태가 중복 계산되어 메모리 초과 발생
-   - DP 배열(dp[y][x][prev_dir])을 통해 이미 계산한 상태 재활용
+   - `dp[i] = dp[i-1] + dp[i-M]`
+   - A 스킬(1초)을 마지막에 사용한 경우 + B 스킬(M초)을 마지막에 사용한 경우
 
-3. **상태 설계의 중요성**
+3. **모듈러 연산(Modular Arithmetic)의 적용**
 
-   - 이전 방향을 상태에 포함시켜 "같은 방향으로 두 번 연속 이동할 수 없음" 조건 처리
-   - 3차원 배열(dp[y][x][prev_dir])을 통해 필요한 모든 정보 저장
+   - 큰 수의 처리를 위해 모든 계산 과정에서 MOD로 나머지 연산 적용
+   - `dp[i] = (dp[i] + dp[i - M]) % MOD;`
 
-4. **최적 부분 구조(Optimal Substructure) 활용**
+4. **공간 복잡도 최적화**
 
-   - 각 위치에서의 최소 비용은 다음 위치들의 최소 비용으로부터 결정됨
-   - 이는 DP 적용의 핵심 조건
+   - 첫 번째 방법: O(결과 문자열의 총 길이) - 메모리 초과
+   - 두 번째 방법: O(N) - 효율적인 메모리 사용
 
-5. **배열 초기화 방법**
-   - `memset(dp, -1, sizeof(dp))` 또는 `fill(&dp[0][0][0], &dp[0][0][0] + 6 * 6 * 3, -1)` 모두 가능
-   - DP 상태 초기화는 아직 계산하지 않은 상태(-1)로 설정하는 것이 중요
+5. **시간 복잡도 개선**
+   - 첫 번째 방법: O(2^N) - 지수 시간 복잡도로 시간 초과 가능성
+   - 두 번째 방법: O(N) - 선형 시간 복잡도로 효율적인 계산
+
+이 문제를 통해 단순히 모든 경우를 나열하는 완전 탐색 대신, 상태 간의 관계를 파악하여 효율적인 DP 솔루션을 설계하는 것의 중요성을 배웠습니다.
